@@ -4,17 +4,19 @@ Character API
 - Read
 - Update
 - Delete
-"""
-from typing import Dict
 
+INPUT :: JSON
+OUTPUT :: JSON
+"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.characters import Character, CharacterOptions
 from app.data import MongoDB
 
 API = FastAPI(
     title="Character API",
-    version="0.0.1",
+    version="0.0.2",
     docs_url="/",
 )
 API.db = MongoDB()
@@ -33,20 +35,24 @@ async def info():
 
 
 @API.post("/create")
-async def create(data: Dict):
-    return API.db.create("Characters", data)
+async def create(data: Character):
+    return API.db.create("Characters", data.dict())
 
 
 @API.get("/read")
-async def read():
-    return API.db.read("Characters", {})
+async def read(query: CharacterOptions):
+    return API.db.read("Characters", query.dict(exclude_none=True))
 
 
 @API.patch("/update")
-async def update(query: Dict, data: Dict):
-    return API.db.update("Characters", query, data)
+async def update(query: CharacterOptions, data: CharacterOptions):
+    return API.db.update(
+        "Characters",
+        query.dict(exclude_none=True),
+        data.dict(exclude_none=True),
+    )
 
 
 @API.delete("/delete")
-async def delete(query: Dict):
-    return API.db.delete("Characters", query)
+async def delete(query: CharacterOptions):
+    return API.db.delete("Characters", query.dict(exclude_none=True))
