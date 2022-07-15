@@ -16,7 +16,7 @@ from app.data import MongoDB
 
 API = FastAPI(
     title="Character API",
-    version="0.0.2",
+    version="0.0.3",
     docs_url="/",
 )
 API.db = MongoDB()
@@ -39,7 +39,7 @@ async def create(data: Character):
     return API.db.create("Characters", data.dict())
 
 
-@API.get("/read")
+@API.put("/read")
 async def read(query: CharacterOptions):
     return API.db.read("Characters", query.dict(exclude_none=True))
 
