@@ -1,5 +1,5 @@
 # Character API Workshop
-API for CRUD operations on a Mongo Database.
+API for CRUD operations on a Mongo Database with data validation.
 
 
 ## Character Object

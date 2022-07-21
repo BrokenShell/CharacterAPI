@@ -1,10 +1,7 @@
-import datetime
 from typing import Literal, Optional
 from random import randint, choice, uniform
 
 from pydantic import BaseModel, Extra, constr, conint, confloat
-
-from app.data import MongoDB
 
 
 class Character(BaseModel):
@@ -43,10 +40,3 @@ class RandomCharacter:
         self.profession = choice(self.professions)
         self.offence = uniform(0, 1)
         self.defense = uniform(0, 1)
-
-
-if __name__ == '__main__':
-    db = MongoDB("RPG_Server")
-    # db.delete("Characters", {})
-    db.create_many("Character", (vars(RandomCharacter()) for _ in range(10)))
-    print(db.read("Characters"))
