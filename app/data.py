@@ -1,3 +1,4 @@
+import datetime
 from os import getenv
 from typing import Optional, List, Dict, Iterator
 
@@ -16,12 +17,12 @@ class MongoDB:
 
     def create(self, collection: str, data: Dict) -> bool:
         return self.connect(collection).insert_one(
-            document=dict(data),
+            document=timestamp(data),
         ).acknowledged
 
     def create_many(self, collection: str, data: Iterator[Dict]) -> bool:
         return self.connect(collection).insert_many(
-            documents=map(dict, data),
+            documents=map(timestamp, data),
         ).acknowledged
 
     def read(self, collection: str, query: Optional[Dict] = None) -> List[Dict]:
@@ -31,6 +32,7 @@ class MongoDB:
         ))
 
     def update(self, collection: str, query: Dict, update_data: Dict) -> bool:
+        update_data["updated_at"] = datetime.datetime.now()
         return self.connect(collection).update_many(
             filter=query,
             update={"$set": update_data},
@@ -47,6 +49,6 @@ class MongoDB:
         )
 
 
-if __name__ == '__main__':
-    db = MongoDB("RPG_Server")
-    db.delete("Characters", {})
+def timestamp(data: Dict) -> Dict:
+    data["created_at"] = datetime.datetime.now()
+    return data

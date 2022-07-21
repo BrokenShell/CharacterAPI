@@ -1,3 +1,5 @@
+import datetime
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,7 +8,7 @@ from app.data import MongoDB
 
 API = FastAPI(
     title="Character API",
-    version="0.0.4",
+    version="0.0.5",
     docs_url="/",
 )
 API.db = MongoDB("RPG_Server")
@@ -25,10 +27,10 @@ async def info():
 
 
 @API.post("/create")
-async def create(data: Character):
+async def create(character: Character):
     return API.db.create(
         "Characters",
-        data.dict(),
+        character.dict(),
     )
 
 
@@ -41,11 +43,11 @@ async def read(query: CharacterOptions):
 
 
 @API.patch("/update")
-async def update(query: CharacterOptions, data: CharacterOptions):
+async def update(query: CharacterOptions, character: CharacterOptions):
     return API.db.update(
         "Characters",
         query.dict(exclude_none=True),
-        data.dict(exclude_none=True),
+        character.dict(exclude_none=True),
     )
 
 
