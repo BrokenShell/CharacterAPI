@@ -8,8 +8,11 @@ from dotenv import load_dotenv
 class MongoDB:
     load_dotenv()
 
-    def connect(self, collection):
-        return MongoClient(getenv("MONGO_URL"))["RPG_Server"][collection]
+    def __init__(self, database: str):
+        self.database = database
+
+    def connect(self, collection: str):
+        return MongoClient(getenv("MONGO_URL"))[self.database][collection]
 
     def create(self, collection: str, data: Dict) -> bool:
         return self.connect(collection).insert_one(
@@ -42,3 +45,8 @@ class MongoDB:
         return self.connect(collection).count_documents(
             filter=query or {},
         )
+
+
+if __name__ == '__main__':
+    db = MongoDB("RPG_Server")
+    db.delete("Characters", {})
